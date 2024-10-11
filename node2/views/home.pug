@@ -1,0 +1,64 @@
+include ./mixins/navbar
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title TheCandle.com
+    link(rel="stylesheet", href="/css/style.css") 
+   
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  body 
+    +navbar(userDetail)
+    .container 
+      h1 Home Page
+      
+
+      
+      form(action="/post-message", method="post")
+        label(for="message") Your Message:
+        textarea(name="message", id="message", rows="4", cols="50")
+        input(type="hidden", name="email", value=userDetail.email)
+        button(type="submit") Post Message
+
+      // Container for messages to be dynamically updated
+      #messagesContainer.messages
+      
+        each message in messages
+          .message
+            p 
+              | <strong>#{message.email}</strong>: #{message.message}
+            p 
+              | <em>Posted on #{new Date(message.createdAt).toLocaleString()}</em>
+
+    
+    script.
+      $(document).ready(function () {
+        function fetchMessages() {
+          $.ajax({
+            url: '/post-message/messages',
+            method: 'GET',
+            success: function (messages) {
+              $('#messagesContainer').empty(); // Clear existing messages
+              messages.forEach(function (message) {
+                $('#messagesContainer').append(
+                  `<div class="message">
+                    <p><strong>${message.email}</strong>: ${message.message}</p>
+                    <p><em>Posted on ${new Date(message.createdAt).toLocaleString()}</em></p>
+                  </div>`
+                );
+              });
+            },
+            error: function (err) {
+              console.error('Error fetching messages:', err);
+            }
+          });
+        }
+
+        
+        setInterval(fetchMessages, 1000);
+
+       
+        fetchMessages();
+      });
+      

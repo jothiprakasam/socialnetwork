@@ -1,0 +1,12 @@
+mixin navbar(userDetail)
+  .navbar
+    h3 Sairam Centralized Network 
+    ul 
+      li 
+        a(href='/home') Home
+      li 
+        a(href="/profile") #{userDetail.name} 
+      li  
+        a(href="/about") About Us  
+      li 
+         a(href="/logout") Logout  

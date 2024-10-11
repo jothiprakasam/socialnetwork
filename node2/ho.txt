@@ -1,0 +1,102 @@
+const express = require("express");
+const path = require("path");
+const app = express();
+const port = 3000;
+const bodyparser = require("body-parser");
+const session = require("express-session");
+const connectDB = require("./database/db");
+const middleware = require("./middleware/middleware");
+const staticUri = path.join(__dirname, "public");
+app.use(express.static(staticUri));
+app.use(
+  session({
+    secret: "jothirameshsai",
+    resave: true,
+    saveUninitialized: false,
+  })
+);
+app.use(bodyparser.urlencoded({ extended: false }));
+
+const userregisterroute = require("./routes/registerRoute");
+const usersignroute = require("./routes/signuproutes");
+const usersignoutroute = require("./routes/logoutRoute");
+const profieRoute = require("./routes/profileroute");
+app.set("view engine", "pug");
+app.set("views", "views");
+app.use("/login", middleware.isLogin, userregisterroute);
+app.use("/register", middleware.isLogin, usersignroute);
+app.use("/logout", userregisterroute);
+//app.use("/profile", middleware.isLogin, profieRoute);
+app.get(["/", "/home"], middleware.isAlreadyLogin, (req, res) => {
+  const pagedata = {
+    userDetail: req.session.jpr,
+  };
+  res.status(200).render("home", pagedata);
+});
+/*app.post("/", async (req, res) => {
+  const postedMessage = req.body.message;
+
+  // Save the message to the database
+  const newMessage = new Message({ content: postedMessage });
+  await newMessage.save();
+
+  // Redirect back to the home page
+  res.redirect("/");
+});*/
+app.get("/about", (req, res) => {
+  res.send("About page");
+});
+app.get(["/profile"], middleware.isAlreadyLogin, (req, res) => {
+  const pagedata = {
+    userDetail: req.session.jpr,
+  };
+  res.status(200).render("profile", pagedata);
+});
+app.listen(port, () => {
+  console.log(`server running in ${port} port`);
+});
+
+
+/** {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: white;
+}
+
+.navbar {
+  width: 100%; /* Set the width to 100% */
+  height: 50px;
+  background-color: rgb(69, 69, 92);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.navbar ul {
+  display: flex;
+  list-style-type: none;
+}
+
+.navbar ul li a {
+  text-decoration: none;
+  padding: 10px;
+  font-family: "Courier New", Courier, monospace;
+  background-color: aliceblue;
+}
+
+.navbar h3 {
+  color: rgb(255, 255, 255);
+  font-size: 20px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.container {
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+}
+*/

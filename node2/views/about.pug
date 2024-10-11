@@ -1,0 +1,27 @@
+include ./mixins/navbar
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title TheCandle.com
+    link(rel="stylesheet", href="/css/styleabout.css") 
+   
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  body 
+    +navbar(userDetail)
+    .container
+      .cont-about 
+        h1 About Us
+        p(class="name")  Jothi Prakasam R 
+        p  Founder and CEO 
+        br
+        p(class="name")  Raj Kumar N 
+        p  Advisor 
+
+
+      
+      .cont-Members
+        h1 Tech Stack 
+        p NOde
+            
